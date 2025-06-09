@@ -1,15 +1,10 @@
 {
   "id": "chat-styler",
   "title": "Chat Styler",
-  "description": "",
+  "description": "FVTT에서도 롤꾸가 하고싶어~",
   "version": "#{VERSION}#",
   "library": "false",
   "manifestPlusVersion": "1.2.0",
-  "compatibility": {
-    "minimum": 10,
-    "verified": 10,
-    "maximum": 11
-  },
   "authors": [
     {
       "name": "RestInLOV3"
