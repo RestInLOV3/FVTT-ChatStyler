@@ -20,13 +20,13 @@
     "requires": []
   },
   "esmodules": [
-    "scripts/module.js"
+    "scripts/chat-styler.js"
   ],
   "scripts": [
     "scripts/lib/lib.js"
   ],
   "styles": [
-    "styles/module.css"
+    "styles/chat-styler.css"
   ],
   
   "url": "#{URL}#",
