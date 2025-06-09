@@ -1,22 +1,40 @@
-// Foundry의 채팅 메시지 렌더링 후크에 연결하여 메시지 내용 수정
-Hooks.on("renderChatMessage", (chatMessage, html, data) => {
-  // 채팅 메시지의 HTML 콘텐츠를 가져옴
-  let content = html.html();
+Hooks.on("renderChatMessageHTML", (chatMessage, htmlElement, data) => {
 
-  // 정규 표현식을 사용하여 markdown-like 형식의 태그를 검색
-  // 패턴 설명:
-  //   \[( [^\]]+ )\]       -> 대괄호 [] 안의 텍스트 (내용)
-  //   \(#"\s*style="([^"]+)"\s*\) -> (#" style="..." ) 형식의 부분에서 style 속성 값 추출
-  const regex = /\[([^\]]+)\]\(#"\s*style="([^"]+)"\s*\)/g;
+  const contentElement = htmlElement.querySelector('.message-content');
 
-  // 정규표현식에 일치하는 부분을 a 태그로 치환
-  let newContent = content.replace(regex, (match, innerText, styleContent) => {
-    // 불필요한 공백 제거
-    styleContent = styleContent.trim();
-    // a 태그 생성, href="#"로 설정하며 클릭 시 기본 동작(페이지 이동)을 막음
-    return `<a href="#" style="${styleContent}" onclick="event.preventDefault();">${innerText}</a>`;
-  });
+  if (contentElement && contentElement.innerHTML) {
+    let content = contentElement.innerHTML;
 
-  // 변환된 새로운 HTML을 적용하여 채팅 메시지 업데이트
-  html.html(newContent);
+
+    const regex = /\[([^\]]+)\]\(#"\s*style="([^"]+)\)/g;
+
+    // 임시 컨테이너를 사용하여 변환 및 이벤트 리스너 추가
+    const tempContainer = document.createElement('div');
+    tempContainer.innerHTML = content; // 현재 내용을 임시 컨테이너에 넣습니다.
+
+    // 임시 컨테이너 안의 HTML 문자열에서 패턴을 찾아 변환
+    // replace 메소드를 문자열에 적용합니다.
+    tempContainer.innerHTML = tempContainer.innerHTML.replace(regex, (match, innerText, styleContent) => {
+      styleContent = styleContent.trim();
+      return `<a href="#" style="${styleContent}" class="my-clickable-link">${innerText}</a>`; // 클래스 추가
+    });
+
+    // 변환된 HTML을 원래 요소에 적용합니다.
+    contentElement.innerHTML = tempContainer.innerHTML;
+
+    // *** 변환된 <a> 태그에 이벤트 리스너를 동적으로 추가합니다. ***
+    // querySelectorAll을 사용하여 변환된 모든 <a> 태그를 찾습니다.
+    const clickableLinks = contentElement.querySelectorAll('.my-clickable-link'); // 추가한 클래스 사용
+
+    clickableLinks.forEach(link => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault(); // 링크 클릭 시 기본 동작(페이지 이동)을 차단합니다.
+        event.stopPropagation(); // 이벤트 버블링을 막습니다. (필요시)
+        // 여기에 링크 클릭 시 실행하고 싶은 JavaScript 코드를 추가할 수 있습니다.
+      });
+    });
+
+  } else {
+      // .message-content 엘리먼트 또는 내용이 없는 경우
+  }
 });
