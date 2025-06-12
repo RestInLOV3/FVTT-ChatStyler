@@ -17,9 +17,6 @@
   "esmodules": [
     "scripts/chat-styler.js"
   ],
-  "scripts": [
-    "scripts/lib/lib.js"
-  ],
   "styles": [
     "styles/chat-styler.css"
   ],
