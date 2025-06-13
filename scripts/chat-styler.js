@@ -38,7 +38,7 @@ Hooks.on("renderChatMessageHTML", (chatMessage, htmlElement, data) => {
 
     // --- 1. 기존: 특정 패턴([내용](#" style="...))을 <a> 태그로 변환 ---
     // 이 로직은 마크다운 변환 로직 이후에 적용됩니다.
-    const styleLinkRegex = /\[([^\]]+)\]\(#"\s*style="([^"]+)"\s*\)/g; // 정확한 정규식 사용 (닫는 따옴표 포함)
+    const styleLinkRegex = /\[([^\]]+)\]\(#"\s*style="([^"]+)\s*\)/g;
 
     finalContent = finalContent.replace(styleLinkRegex, (match, innerText, styleContent) => {
       styleContent = styleContent.trim();
